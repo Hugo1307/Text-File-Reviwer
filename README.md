@@ -9,7 +9,7 @@ This is a python script that can help you to study text files.
 
 <ul>
 <li>List of all words on the file with the number of times that this word appears on the file.</li>
-
+  <p></p>
 <li>Search word on file by keyword and get:</li>
 <ul>
   <li>Count of that word on the file;</li>
