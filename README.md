@@ -24,6 +24,6 @@ This is a python script that can help you to study text files.
   <li>The total amount of words, characters, spaces, and lines.</li>
 </ul>
 </ul>
-
+<br>
 
 More functionalities soon!
