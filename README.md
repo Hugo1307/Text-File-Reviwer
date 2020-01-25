@@ -17,6 +17,7 @@ This is a python script that can help you to study text files.
   <li>Words which are after and before;</li>
   <li>Look-a-like words.</li>
 </ul>
+  <p></p>
 <li>Get the main summary of the text file:</li>
 <ul>
   <li>Most used words;</li>
