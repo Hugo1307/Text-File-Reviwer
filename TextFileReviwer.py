@@ -14,7 +14,7 @@ class Word:
         self.similiarWords = similarWords
 
 #---------------------------------------------
-#Variáveis Globais
+#Global Variables
 #---------------------------------------------
 
 optionsList = ['1', '2', '3']
@@ -22,7 +22,7 @@ wordInfo = Word('', 0, [], set(), set(), set())
 filePath = '/home/hugo/Desktop/Python/text.txt'
 
 #---------------------------------------------
-#Funções
+#Functions
 #---------------------------------------------
 
 def menu():
@@ -197,18 +197,13 @@ def printMainSummary(mostUsedWords):
         quit()
 
 #-------------------------------------------------- 
-#Função Main
+#Main Function
 #--------------------------------------------------
 
 def main():
     print('-------------------------------------------------')
     print('{:^50}'.format('WordSearcher Advanced'))
     print('-------------------------------------------------')
-
-    #filePath = input('Insert file path: ')
-    #while not os.path.isfile(filePath):
-        #filePath = input('Insert file path: ')
-
     #Menu
     menu()
 
