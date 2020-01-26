@@ -17,20 +17,43 @@ class Word:
 #Global Variables
 #---------------------------------------------
 
-optionsList = ['1', '2', '3']
+optionsList = ['1', '2', '3', '4']
 wordInfo = Word('', 0, [], set(), set(), set())
-filePath = '/home/hugo/Desktop/Python/text.txt'
+filePath = ''
 
 #---------------------------------------------
 #Functions
 #---------------------------------------------
 
+def documentStats():
+    totalLines = 0
+    totalWords = 0
+    totalChars = 0
+    totalSpaces = 0
+    with open(filePath, 'r') as f:
+        for line in f:
+            totalSpaces += line.count(' ')
+            totalWords += len(line.strip().split(' '))
+            totalLines += 1
+            for word in line.strip().split(' '):
+                totalChars += len(word)
+
+    return [totalLines, totalWords, totalChars, totalSpaces]
+
 def menu():
     print('')
     print('Option List:')
-    print('1) Search for word in file')
-    print('2) List all words in file')
-    print('3) Summary', end='\n \n')
+    print('1) List all words in file')
+    print('2) Summary')
+    print('3) Search for word in file (by word)')
+    print('4) Search for word in file (by position)', end='\n \n')
+
+    wordInfo.word = ''
+    wordInfo.count = 0
+    wordInfo.lines = []
+    wordInfo.precedents = set()
+    wordInfo.successors = set()
+    wordInfo.similiarWords = set()
 
     menuOption = input('Select a number: ')
     while menuOption not in optionsList:
@@ -38,19 +61,39 @@ def menu():
 
     if menuOption == '1':
 
+        printAllWords(listAllWords(filePath))
+
+    elif menuOption == '2':
+        printMainSummary(mostUsedWords())
+
+    elif menuOption == '3':
         wordToSearch = input('Enter Word: ')
         while not wordToSearch:
             wordToSearch = input('Enter Word: ')
 
-        searchWord(wordToSearch.lower(), filePath)
+        searchWord(wordToSearch.lower())
         printSearchWord()
+    
+    elif menuOption == '4':
+        lineToSearch = input('Enter Line: ')
+        while not lineToSearch.isnumeric():
+            lineToSearch = input('Enter Line: ')
 
-    elif menuOption == '2':
-        printAllWords(listAllWords(filePath))
+        posToSearch = input('Enter Position: ')
+        while not posToSearch.isnumeric():
+            posToSearch = input('Enter Position: ')
 
-    elif menuOption == '3':
-        printMainSummary(mostUsedWords())
+        searchWordByPos(int(lineToSearch), int(posToSearch))
 
+def getToMenu():
+    dialogOption = input('Get back to the menu? [Y/N] ')
+    while dialogOption not in ['Y', 'N', 'y', 'n', 'yes', 'no']:
+        dialogOption = input('Get back to the menu? [Y/N] ')
+
+    if dialogOption == 'Y' or dialogOption == 'y' or dialogOption == 'yes':
+        menu()
+    else:
+        quit()
 
 def listAllWords(f):
     wordsDict = {}
@@ -77,14 +120,9 @@ def printAllWords(wordsList):
     for item in wordsList:
         print('{}({})'.format(item[0], item[1]), end=', ')
 
-    dialogOption = input('Get back to the menu? [Y/N] ')
-    while dialogOption not in ['Y', 'N', 'y', 'n', 'yes', 'no']:
-        dialogOption = input('Get back to the menu? [Y/N] ')
+    print()
 
-    if dialogOption == 'Y' or dialogOption == 'y' or dialogOption == 'yes':
-        menu()
-    else:
-        quit()
+    getToMenu()
 
 def findResemblance(word, filePath):
     wordList = [element[0] for element in listAllWords(filePath) if len(element[0]) >= len(word)]
@@ -93,7 +131,7 @@ def findResemblance(word, filePath):
         if word in i:
             wordInfo.similiarWords.add(i)
 
-def searchWord(word, filePath):
+def searchWord(word):
     linhaNumber = 0
 
     with open(filePath, 'r') as f:
@@ -138,14 +176,37 @@ def printSearchWord():
         print(word, end=', ')
     print('',end='\n \n')
 
-    dialogOption = input('Get back to the menu? [Y/N] ')
-    while dialogOption not in ['Y', 'N', 'y', 'n', 'yes', 'no']:
-        dialogOption = input('Get back to the menu? [Y/N] ')
+    getToMenu()
 
-    if dialogOption == 'Y' or dialogOption == 'y' or dialogOption == 'yes':
-        menu()
-    else:
-        quit()
+def searchWordByPos(line, position):
+    with open(filePath) as f:
+        
+        linesList = f.readlines()
+        currentLine = linesList[line].strip().split(' ')
+
+        if not linesList[line].strip():
+            print()
+            print('These line is empty.', end='\n \n')
+            getToMenu()
+            return
+
+        if line > documentStats()[0]:
+            print()
+            print('These line is out of range.', end='\n \n')
+            getToMenu()
+            return
+        
+        if position >= len(currentLine):
+            print()
+            print('Position out of range.', end='\n \n')
+            getToMenu()
+            return
+
+        for wordIndex in range(len(currentLine)):
+            if wordIndex == position:
+               searchWord(currentLine[wordIndex].translate(str.maketrans('', '', string.punctuation)))
+               printSearchWord()
+
 
 def mostUsedWords():
     wordsList = listAllWords(filePath)
@@ -153,21 +214,6 @@ def mostUsedWords():
     wordsListByOcurrences = sorted(wordsList, key=lambda x: x[1], reverse=True)
 
     return wordsListByOcurrences[0:5]
-
-def documentStats():
-    totalLines = 0
-    totalWords = 0
-    totalChars = 0
-    totalSpaces = 0
-    with open(filePath, 'r') as f:
-        for line in f:
-            totalSpaces += line.count(' ')
-            totalWords += len(line.strip().split(' '))
-            totalLines += 1
-            for word in line.strip().split(' '):
-                totalChars += len(word)
-
-    return [totalLines, totalWords, totalChars, totalSpaces]
 
 def printMainSummary(mostUsedWords):
     print('----------------------------------------------------------------------------------------------------')
@@ -183,18 +229,11 @@ def printMainSummary(mostUsedWords):
 
     print('Total lines:', documentStats()[0])
     print('Total words:', documentStats()[1])
-    print('Total words (no repetitions):', len(listAllWords(filePath)))
+    print('Used words (no repetitions):', len(listAllWords(filePath)))
     print('Total characters:', documentStats()[2])
     print('Total spaces:', documentStats()[3], end='\n \n')
 
-    dialogOption = input('Get back to the menu? [Y/N] ')
-    while dialogOption not in ['Y', 'N', 'y', 'n', 'yes', 'no']:
-        dialogOption = input('Get back to the menu? [Y/N] ')
-
-    if dialogOption == 'Y' or dialogOption == 'y' or dialogOption == 'yes':
-        menu()
-    else:
-        quit()
+    getToMenu()
 
 #-------------------------------------------------- 
 #Main Function
@@ -204,6 +243,13 @@ def main():
     print('-------------------------------------------------')
     print('{:^50}'.format('WordSearcher Advanced'))
     print('-------------------------------------------------')
+
+    global filePath
+
+    filePath = input('Enter file path: ')
+    while not os.path.isfile(filePath):
+        filePath = input('Enter file path: ')
+
     #Menu
     menu()
 
