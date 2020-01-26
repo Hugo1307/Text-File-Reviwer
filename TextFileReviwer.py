@@ -14,7 +14,7 @@ class Word:
         self.similiarWords = similarWords
 
 #---------------------------------------------
-#Variáveis Globais
+#Global Variables
 #---------------------------------------------
 
 optionsList = ['1', '2', '3', '4']
@@ -22,7 +22,7 @@ wordInfo = Word('', 0, [], set(), set(), set())
 filePath = ''
 
 #---------------------------------------------
-#Funções
+#Functions
 #---------------------------------------------
 
 def documentStats():
@@ -236,7 +236,7 @@ def printMainSummary(mostUsedWords):
     getToMenu()
 
 #-------------------------------------------------- 
-#Função Main
+#Main Function
 #--------------------------------------------------
 
 def main():
