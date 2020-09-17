@@ -25,5 +25,3 @@ This is a python script that can help you to study text files.
 </ul>
 </ul>
 <br>
-
-More functionalities soon!
